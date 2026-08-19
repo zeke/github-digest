@@ -10,14 +10,16 @@ function escapeHtml(text: string): string {
 }
 
 // Minimal Markdown -> HTML for the small subset the digest agent actually
-// produces: ## headings, - bullet lists, [text](url) links, and paragraphs.
-// Not a general-purpose Markdown renderer.
+// produces: ## headings, - bullet lists, **bold**, [text](url) links, and
+// paragraphs. Not a general-purpose Markdown renderer.
 export function markdownToHtml(markdown: string): string {
-	const withLinks = (line: string) =>
-		escapeHtml(line).replace(
-			/\[([^\]]+)\]\(([^)]+)\)/g,
-			(_match, text: string, url: string) => `<a href="${url}">${text}</a>`,
-		);
+	const withInlineFormatting = (line: string) =>
+		escapeHtml(line)
+			.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+			.replace(
+				/\[([^\]]+)\]\(([^)]+)\)/g,
+				(_match, text: string, url: string) => `<a href="${url}">${text}</a>`,
+			);
 
 	const lines = markdown.trim().split('\n');
 	const html: string[] = [];
@@ -38,16 +40,16 @@ export function markdownToHtml(markdown: string): string {
 		}
 		if (trimmed.startsWith('## ')) {
 			closeList();
-			html.push(`<h2>${withLinks(trimmed.slice(3))}</h2>`);
+			html.push(`<h2>${withInlineFormatting(trimmed.slice(3))}</h2>`);
 		} else if (trimmed.startsWith('- ')) {
 			if (!inList) {
 				html.push('<ul>');
 				inList = true;
 			}
-			html.push(`<li>${withLinks(trimmed.slice(2))}</li>`);
+			html.push(`<li>${withInlineFormatting(trimmed.slice(2))}</li>`);
 		} else {
 			closeList();
-			html.push(`<p>${withLinks(trimmed)}</p>`);
+			html.push(`<p>${withInlineFormatting(trimmed)}</p>`);
 		}
 	}
 	closeList();

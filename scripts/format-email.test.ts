@@ -28,6 +28,26 @@ describe('markdownToHtml', () => {
 		);
 	});
 
+	it('renders bold text', () => {
+		expect(
+			markdownToHtml('**cloudflare/cloudflare-docs** — review requested'),
+		).toBe(
+			'<p><strong>cloudflare/cloudflare-docs</strong> — review requested</p>',
+		);
+	});
+
+	it('renders bold text inside a bullet alongside a link', () => {
+		expect(
+			markdownToHtml('- **Fix bug** in [zeke/x](https://github.com/zeke/x)'),
+		).toBe(
+			[
+				'<ul>',
+				'<li><strong>Fix bug</strong> in <a href="https://github.com/zeke/x">zeke/x</a></li>',
+				'</ul>',
+			].join('\n'),
+		);
+	});
+
 	it('escapes HTML special characters', () => {
 		expect(markdownToHtml('A <script> tag & friends')).toBe(
 			'<p>A &lt;script&gt; tag &amp; friends</p>',
