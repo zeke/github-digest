@@ -17,7 +17,11 @@ afterEach(() => {
 describe('sendEmail', () => {
 	it('POSTs the email to the Cloudflare Email Sending API', async () => {
 		const fetchMock = vi.fn().mockResolvedValue({
-			json: async () => ({ success: true, errors: [], result: { delivered: [email.to], permanent_bounces: [], queued: [] } }),
+			json: async () => ({
+				success: true,
+				errors: [],
+				result: { delivered: [email.to], permanent_bounces: [], queued: [] },
+			}),
 		});
 		vi.stubGlobal('fetch', fetchMock);
 
@@ -37,12 +41,16 @@ describe('sendEmail', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockResolvedValue({
-				json: async () => ({ success: false, errors: [{ code: 1000, message: 'Sender domain not verified' }], result: null }),
+				json: async () => ({
+					success: false,
+					errors: [{ code: 1000, message: 'Sender domain not verified' }],
+					result: null,
+				}),
 			}),
 		);
 
-		await expect(sendEmail({ accountId: 'acct-123', apiToken: 'token-abc' }, email)).rejects.toThrow(
-			'Sender domain not verified',
-		);
+		await expect(
+			sendEmail({ accountId: 'acct-123', apiToken: 'token-abc' }, email),
+		).rejects.toThrow('Sender domain not verified');
 	});
 });

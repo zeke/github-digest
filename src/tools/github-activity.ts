@@ -1,5 +1,5 @@
-import { Octokit } from '@octokit/rest';
 import { defineTool } from '@flue/runtime';
+import { Octokit } from '@octokit/rest';
 import * as v from 'valibot';
 
 // Schema-first: this is the single source of truth for an activity item's
@@ -46,7 +46,9 @@ interface RawActivity {
 // https://api.github.com/repos/owner/repo/pulls/123 — turn it into the
 // browsable URL a human (or the digest email) can click.
 export function apiUrlToHtmlUrl(apiUrl: string): string {
-	return apiUrl.replace('https://api.github.com/repos/', 'https://github.com/').replace('/pulls/', '/pull/');
+	return apiUrl
+		.replace('https://api.github.com/repos/', 'https://github.com/')
+		.replace('/pulls/', '/pull/');
 }
 
 // Search API items carry a `repository_url` like
@@ -59,7 +61,9 @@ export function repoFullNameFromApiUrl(apiUrl: string): string {
 function mapNotification(notification: RawNotification): ActivityItem {
 	return {
 		title: notification.subject.title,
-		url: notification.subject.url ? apiUrlToHtmlUrl(notification.subject.url) : '',
+		url: notification.subject.url
+			? apiUrlToHtmlUrl(notification.subject.url)
+			: '',
 		repo: notification.repository.full_name,
 		reason: notification.reason,
 		updatedAt: notification.updated_at,
@@ -85,10 +89,14 @@ export function formatGithubActivity(raw: RawActivity): GithubActivity {
 	};
 }
 
-export async function fetchGithubActivity(client: Octokit): Promise<GithubActivity> {
+export async function fetchGithubActivity(
+	client: Octokit,
+): Promise<GithubActivity> {
 	const [notifications, reviewRequested, assigned] = await Promise.all([
 		client.rest.activity.listNotificationsForAuthenticatedUser({ all: false }),
-		client.rest.search.issuesAndPullRequests({ q: 'review-requested:@me is:open is:pr' }),
+		client.rest.search.issuesAndPullRequests({
+			q: 'review-requested:@me is:open is:pr',
+		}),
 		client.rest.search.issuesAndPullRequests({ q: 'assignee:@me is:open' }),
 	]);
 	return formatGithubActivity({

@@ -3,7 +3,10 @@
 // any API.
 
 function escapeHtml(text: string): string {
-	return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	return text
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;');
 }
 
 // Minimal Markdown -> HTML for the small subset the digest agent actually
@@ -11,7 +14,10 @@ function escapeHtml(text: string): string {
 // Not a general-purpose Markdown renderer.
 export function markdownToHtml(markdown: string): string {
 	const withLinks = (line: string) =>
-		escapeHtml(line).replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text: string, url: string) => `<a href="${url}">${text}</a>`);
+		escapeHtml(line).replace(
+			/\[([^\]]+)\]\(([^)]+)\)/g,
+			(_match, text: string, url: string) => `<a href="${url}">${text}</a>`,
+		);
 
 	const lines = markdown.trim().split('\n');
 	const html: string[] = [];
@@ -66,7 +72,10 @@ export interface DigestEmail {
 	text: string;
 }
 
-export function buildDigestEmail(digestMarkdown: string, date: Date): DigestEmail {
+export function buildDigestEmail(
+	digestMarkdown: string,
+	date: Date,
+): DigestEmail {
 	return {
 		to: 'zeke@sikelianos.com',
 		from: { address: 'digest@ziki.boo', name: 'GitHub Digest' },

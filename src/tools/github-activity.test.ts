@@ -1,23 +1,33 @@
 import { describe, expect, it } from 'vitest';
-import { apiUrlToHtmlUrl, formatGithubActivity, repoFullNameFromApiUrl } from './github-activity.ts';
+import {
+	apiUrlToHtmlUrl,
+	formatGithubActivity,
+	repoFullNameFromApiUrl,
+} from './github-activity.ts';
 
 describe('apiUrlToHtmlUrl', () => {
 	it('converts an issue API URL to its browsable URL', () => {
-		expect(apiUrlToHtmlUrl('https://api.github.com/repos/zeke/github-digest/issues/12')).toBe(
-			'https://github.com/zeke/github-digest/issues/12',
-		);
+		expect(
+			apiUrlToHtmlUrl(
+				'https://api.github.com/repos/zeke/github-digest/issues/12',
+			),
+		).toBe('https://github.com/zeke/github-digest/issues/12');
 	});
 
 	it('converts a pull request API URL, singularizing /pulls/ to /pull/', () => {
-		expect(apiUrlToHtmlUrl('https://api.github.com/repos/zeke/github-digest/pulls/12')).toBe(
-			'https://github.com/zeke/github-digest/pull/12',
-		);
+		expect(
+			apiUrlToHtmlUrl(
+				'https://api.github.com/repos/zeke/github-digest/pulls/12',
+			),
+		).toBe('https://github.com/zeke/github-digest/pull/12');
 	});
 });
 
 describe('repoFullNameFromApiUrl', () => {
 	it('extracts owner/repo from a repository API URL', () => {
-		expect(repoFullNameFromApiUrl('https://api.github.com/repos/zeke/github-digest')).toBe('zeke/github-digest');
+		expect(
+			repoFullNameFromApiUrl('https://api.github.com/repos/zeke/github-digest'),
+		).toBe('zeke/github-digest');
 	});
 
 	it('falls back when the URL does not match the expected shape', () => {
@@ -30,7 +40,10 @@ describe('formatGithubActivity', () => {
 		const result = formatGithubActivity({
 			notifications: [
 				{
-					subject: { title: 'Something happened', url: 'https://api.github.com/repos/zeke/github-digest/issues/1' },
+					subject: {
+						title: 'Something happened',
+						url: 'https://api.github.com/repos/zeke/github-digest/issues/1',
+					},
 					repository: { full_name: 'zeke/github-digest' },
 					reason: 'subscribed',
 					updated_at: '2026-08-19T00:00:00Z',
