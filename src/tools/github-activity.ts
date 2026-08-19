@@ -14,8 +14,8 @@ const activityItemSchema = v.object({
 
 const githubActivitySchema = v.object({
 	notifications: v.array(activityItemSchema),
-	reviewRequested: v.array(activityItemSchema),
-	assigned: v.array(activityItemSchema),
+	pullRequests: v.array(activityItemSchema),
+	issues: v.array(activityItemSchema),
 	highlights: v.array(activityItemSchema),
 });
 
@@ -55,8 +55,9 @@ export interface StarredRepo {
 
 interface RawActivity {
 	notifications: RawNotification[];
-	reviewRequested: RawSearchItem[];
-	assigned: RawSearchItem[];
+	reviewRequestedPRs: RawSearchItem[];
+	assignedPRs: RawSearchItem[];
+	assignedIssues: RawSearchItem[];
 	starredRepos: StarredRepo[];
 	since: Date;
 }
@@ -89,13 +90,28 @@ function mapNotification(notification: RawNotification): ActivityItem {
 	};
 }
 
-function mapSearchItem(item: RawSearchItem): ActivityItem {
+function mapSearchItem(item: RawSearchItem, reason: string): ActivityItem {
 	return {
 		title: item.title,
 		url: item.html_url,
 		repo: repoFullNameFromApiUrl(item.repository_url),
+		reason,
 		updatedAt: item.updated_at,
 	};
+}
+
+// review-requested and assigned searches can both return the same pull
+// request; keep the first occurrence (review-requested items are passed in
+// first, so that reason wins as the more actionable one).
+function dedupeByUrl(items: ActivityItem[]): ActivityItem[] {
+	const seen = new Set<string>();
+	const result: ActivityItem[] = [];
+	for (const item of items) {
+		if (seen.has(item.url)) continue;
+		seen.add(item.url);
+		result.push(item);
+	}
+	return result;
 }
 
 // A starred repo is a highlight if it has a release or a push at or after
@@ -126,10 +142,16 @@ function mapHighlight(repo: StarredRepo, since: Date): ActivityItem | null {
 // Pure formatting step, kept separate from the network call so it's testable
 // without hitting the GitHub API.
 export function formatGithubActivity(raw: RawActivity): GithubActivity {
+	const pullRequests = dedupeByUrl([
+		...raw.reviewRequestedPRs.map((item) =>
+			mapSearchItem(item, 'review_requested'),
+		),
+		...raw.assignedPRs.map((item) => mapSearchItem(item, 'assigned')),
+	]);
 	return {
 		notifications: raw.notifications.map(mapNotification),
-		reviewRequested: raw.reviewRequested.map(mapSearchItem),
-		assigned: raw.assigned.map(mapSearchItem),
+		pullRequests,
+		issues: raw.assignedIssues.map((item) => mapSearchItem(item, 'assigned')),
 		highlights: raw.starredRepos
 			.map((repo) => mapHighlight(repo, raw.since))
 			.filter((item) => item !== null),
@@ -187,21 +209,30 @@ export async function fetchGithubActivity(
 	client: Octokit,
 	since: Date = new Date(Date.now() - 24 * 60 * 60 * 1000),
 ): Promise<GithubActivity> {
-	const [notifications, reviewRequested, assigned, starredRepos] =
-		await Promise.all([
-			client.rest.activity.listNotificationsForAuthenticatedUser({
-				all: false,
-			}),
-			client.rest.search.issuesAndPullRequests({
-				q: 'review-requested:@me is:open is:pr',
-			}),
-			client.rest.search.issuesAndPullRequests({ q: 'assignee:@me is:open' }),
-			fetchStarredRepos(client),
-		]);
+	const [
+		notifications,
+		reviewRequestedPRs,
+		assignedPRs,
+		assignedIssues,
+		starredRepos,
+	] = await Promise.all([
+		client.rest.activity.listNotificationsForAuthenticatedUser({ all: false }),
+		client.rest.search.issuesAndPullRequests({
+			q: 'review-requested:@me is:open is:pr',
+		}),
+		client.rest.search.issuesAndPullRequests({
+			q: 'assignee:@me is:open is:pr',
+		}),
+		client.rest.search.issuesAndPullRequests({
+			q: 'assignee:@me is:open is:issue',
+		}),
+		fetchStarredRepos(client),
+	]);
 	return formatGithubActivity({
 		notifications: notifications.data,
-		reviewRequested: reviewRequested.data.items,
-		assigned: assigned.data.items,
+		reviewRequestedPRs: reviewRequestedPRs.data.items,
+		assignedPRs: assignedPRs.data.items,
+		assignedIssues: assignedIssues.data.items,
 		starredRepos,
 		since,
 	});
@@ -210,7 +241,7 @@ export async function fetchGithubActivity(
 export const githubActivity = defineTool({
 	name: 'github_activity',
 	description:
-		'Fetch unread GitHub notifications (includes watched-repo activity), open pull requests awaiting your review, issues/PRs assigned to you, and highlights (new releases or pushes on starred repos in the last 24 hours).',
+		'Fetch unread GitHub notifications (includes watched-repo activity), open pull requests (awaiting your review or assigned to you), open issues assigned to you, and highlights (new releases or pushes on starred repos in the last 24 hours).',
 	output: githubActivitySchema,
 	async run() {
 		const client = new Octokit({ auth: process.env.DIGEST_GITHUB_TOKEN });

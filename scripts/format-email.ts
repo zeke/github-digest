@@ -10,8 +10,8 @@ function escapeHtml(text: string): string {
 }
 
 // Minimal Markdown -> HTML for the small subset the digest agent actually
-// produces: ## headings, - bullet lists, **bold**, [text](url) links, and
-// paragraphs. Not a general-purpose Markdown renderer.
+// produces: ## and ### headings, - bullet lists, **bold**, [text](url)
+// links, and paragraphs. Not a general-purpose Markdown renderer.
 export function markdownToHtml(markdown: string): string {
 	const withInlineFormatting = (line: string) =>
 		escapeHtml(line)
@@ -38,7 +38,10 @@ export function markdownToHtml(markdown: string): string {
 			closeList();
 			continue;
 		}
-		if (trimmed.startsWith('## ')) {
+		if (trimmed.startsWith('### ')) {
+			closeList();
+			html.push(`<h3>${withInlineFormatting(trimmed.slice(4))}</h3>`);
+		} else if (trimmed.startsWith('## ')) {
 			closeList();
 			html.push(`<h2>${withInlineFormatting(trimmed.slice(3))}</h2>`);
 		} else if (trimmed.startsWith('- ')) {

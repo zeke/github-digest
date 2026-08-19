@@ -22,6 +22,23 @@ describe('markdownToHtml', () => {
 		);
 	});
 
+	it('renders ### as an h3, distinct from ##', () => {
+		const markdown = [
+			'## Needs your attention',
+			'### Pull Requests',
+			'- one item',
+		].join('\n');
+		expect(markdownToHtml(markdown)).toBe(
+			[
+				'<h2>Needs your attention</h2>',
+				'<h3>Pull Requests</h3>',
+				'<ul>',
+				'<li>one item</li>',
+				'</ul>',
+			].join('\n'),
+		);
+	});
+
 	it('renders plain lines as paragraphs', () => {
 		expect(markdownToHtml('Nothing new today.')).toBe(
 			'<p>Nothing new today.</p>',

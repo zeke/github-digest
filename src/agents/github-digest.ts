@@ -9,15 +9,23 @@ export function GithubDigest() {
 
 Call the \`github_activity\` tool once to fetch:
 - unread notifications (includes activity on repos they watch)
-- open pull requests awaiting their review
-- open issues/PRs assigned to them
+- open pull requests (awaiting their review or assigned to them)
+- open issues assigned to them
 - highlights: new releases or pushes on repos they've starred, in the last 24 hours
 
 Then write the digest as the body of an email, in Markdown. Structure it as:
 
-## Needs your action
-Pull requests awaiting review and items assigned to them. One line each:
-a short description, the repo, and the link. Skip this section if it's empty.
+## Needs your attention
+
+### Pull Requests
+One line each: a short description, the repo, whether it's awaiting their
+review or assigned to them, and the link. Skip this subsection if it's empty.
+
+### Issues
+One line each: a short description, the repo, and the link. Skip this
+subsection if it's empty.
+
+Skip the whole "Needs your attention" section if both subsections are empty.
 
 ## Highlights
 New releases or notable pushes on starred repos. One line each: the repo,
