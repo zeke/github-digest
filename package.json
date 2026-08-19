@@ -3,14 +3,18 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"check:types": "tsc --noEmit"
+		"check:types": "tsc --noEmit",
+		"test": "vitest run"
 	},
 	"dependencies": {
-		"@flue/runtime": "^2.0.3"
+		"@flue/runtime": "^2.0.3",
+		"@octokit/rest": "^22.0.1",
+		"valibot": "^1.4.2"
 	},
 	"devDependencies": {
 		"@flue/cli": "^2.0.3",
 		"@types/node": "^22.10.10",
-		"typescript": "^7.0.2"
+		"typescript": "^7.0.2",
+		"vitest": "^4.1.10"
 	}
 }
