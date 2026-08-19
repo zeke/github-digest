@@ -1,5 +1,10 @@
 # Plan: GitHub Digest
 
+> **Status: done.** All steps below shipped and were verified end to end —
+> `flue run` locally, `npm run digest` locally (real email sent), and a live
+> `workflow_dispatch` run in GitHub Actions (real email sent). Kept here as a
+> build log; ongoing project knowledge lives in AGENTS.md.
+
 A small open-source demo of the [Flue](https://flueframework.com) agent framework: a
 scheduled agent that checks GitHub for things you might have missed — unread
 notifications (covers watched-repo activity), PRs awaiting your review, and
