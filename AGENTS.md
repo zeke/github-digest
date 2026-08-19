@@ -19,7 +19,7 @@ not a snapshot of how it worked when it was built.
 
 ## Layout
 
-- `src/tools/github-activity.ts` — Octokit tool. `fetchGithubActivity()` hits the GitHub API; `formatGithubActivity()` is the pure mapping/formatting step, unit-tested in the colocated `.test.ts`.
+- `src/tools/github-activity.ts` — Octokit tool. `fetchGithubActivity()` hits the GitHub API (REST for notifications/search, GraphQL for starred-repo highlights); `formatGithubActivity()` is the pure mapping/formatting step, unit-tested in the colocated `.test.ts`.
 - `src/agents/github-digest.ts` — the `GithubDigest` agent. Model: `cloudflare-ai-gateway/claude-sonnet-5`. Mounts the tool, instructs the model to fetch activity once and write the email body as Markdown.
 - `scripts/format-email.ts` — pure functions: Markdown → HTML (the small subset the agent's prompt actually produces — headings, bullets, links), Pacific-date formatting, and the full email payload builder. Unit-tested.
 - `scripts/send-email.ts` — the Cloudflare Email Sending API client. Unit-tested with a mocked `fetch`.
@@ -101,6 +101,20 @@ npm run digest          # runs the real send-digest.ts end to end, including the
 real email. `npm run digest` is the actual production path — it will send a
 real email to `zeke@sikelianos.com` if the Cloudflare Email Sending
 credentials are valid.
+
+## Highlights (starred-repo activity)
+
+GitHub has no "follow a repo" feature distinct from starring or watching —
+only starring, watching, and following *users* exist. Watched-repo activity
+is already covered by notifications, so "highlights" means recent activity on
+**starred** repos: a new release, or a push, in the last 24 hours (a release
+wins over a plain push when both happened — see `mapHighlight()`).
+
+This is fetched via one GraphQL query (`fetchStarredRepos()`), not the REST
+search/notifications endpoints, because it needs `pushedAt` and the latest
+release for every starred repo in a single round trip. Octokit's REST client
+still exposes `.graphql()` for this — no extra dependency. Capped at the
+first 100 starred repos (GraphQL's per-page max); not paginated further.
 
 ## Gotchas
 
