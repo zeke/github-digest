@@ -1,0 +1,43 @@
+name: Send digest
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # 8am PDT (UTC-7)
+    - cron: '0 16 * * *' # 8am PST (UTC-8)
+  workflow_dispatch: {}
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Cron in GitHub Actions is UTC-only and doesn't shift with daylight
+      # saving. Both schedule lines above fire daily; this step only lets the
+      # one that actually lands at 8am Pacific through. A manual
+      # workflow_dispatch run always proceeds, so it works as an on-demand
+      # test regardless of the time of day.
+      - name: Check if it's 8am Pacific
+        id: gate
+        run: |
+          hour=$(TZ=America/Los_Angeles date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$hour" = "08" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send digest
+        if: steps.gate.outputs.should_run == 'true'
+        run: npm run digest
+        env:
+          DIGEST_GITHUB_TOKEN: ${{ secrets.DIGEST_GITHUB_TOKEN }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CF_AI_GATEWAY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CLOUDFLARE_GATEWAY_ID: ${{ secrets.CF_AI_GATEWAY_ID }}
+          CF_EMAIL_TOKEN: ${{ secrets.CF_EMAIL_TOKEN }}

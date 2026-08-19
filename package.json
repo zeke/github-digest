@@ -6,7 +6,8 @@
 		"check:types": "tsc --noEmit",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"test": "vitest run"
+		"test": "vitest run",
+		"digest": "tsx scripts/send-digest.ts"
 	},
 	"dependencies": {
 		"@flue/runtime": "^2.0.3",
@@ -17,6 +18,7 @@
 		"@biomejs/biome": "2.5.8",
 		"@flue/cli": "^2.0.3",
 		"@types/node": "^22.10.10",
+		"tsx": "^4.23.12",
 		"typescript": "^7.0.2",
 		"vitest": "^4.1.10"
 	}
