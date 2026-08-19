@@ -1,3 +1,7 @@
+// GitHub Actions supplies secrets as real env vars already; this is only for
+// `npm run digest` locally. `dotenv` doesn't override existing env vars and
+// no-ops quietly when .env is absent, so it's safe in both cases.
+import 'dotenv/config';
 import { init } from '@flue/runtime';
 import { start } from '@flue/runtime/node';
 import { GithubDigest } from '../src/agents/github-digest.ts';
