@@ -103,12 +103,14 @@ src/tools/github-activity.ts
 scripts/send-digest.ts
 scripts/dst-gate.test.ts (etc. — colocated *.test.ts files)
 flue.config.ts
-vite.config.ts
 .env.example
 AGENTS.md
 README.md
 LICENSE
 ```
+
+No `vite.config.ts`/`app.ts` — this project has no hosted server. It's a
+Node script invoked by a GitHub Actions workflow, not a deployed app.
 
 ## Build order
 

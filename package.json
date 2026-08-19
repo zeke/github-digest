@@ -1,0 +1,16 @@
+{
+	"name": "github-digest",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@flue/runtime": "^2.0.3"
+	},
+	"devDependencies": {
+		"@flue/cli": "^2.0.3",
+		"@types/node": "^22.10.10",
+		"typescript": "^7.0.2"
+	}
+}
