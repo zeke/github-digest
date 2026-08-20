@@ -1,5 +1,7 @@
 # GitHub Digest
 
+![GitHub Digest](./docs/og-image.jpg)
+
 This is a simple automation that emails me a daily summary of GitHub activity
 for repos I'm watching.
 
