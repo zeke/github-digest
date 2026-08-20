@@ -1,0 +1,21 @@
+{
+  "task": "GitHub Digest OpenGraph image",
+  "model": "google/nano-banana-2",
+  "generated_at": "2026-08-20T17:22:50.403Z",
+  "items": [
+    {
+      "prediction_id": "zxeqjqgyz5rmw0d040sb4ejgsr",
+      "status": "succeeded",
+      "remote_output": "https://replicate.delivery/xezq/RmPfeEk0qEsB2UbnneEUyvr4ShGJQL0pf0FKHZHlu0Lqe0p4C/tmppm8z9qqk.jpeg",
+      "local_path": "files/zxeqjqgyz5rmw0d040sb4ejgsr__google-nano-banana-2__octocat-cloudflare-cloud-paper-airplane__01.jpg",
+      "prediction_record": "predictions/zxeqjqgyz5rmw0d040sb4ejgsr.json"
+    }
+  ],
+  "reference_images": [
+    "https://octodex.github.com/images/original.png",
+    "https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png (hotlink-blocked, embedded as base64; local copy in refs/cloudflare-logo.png)",
+    "https://octodex.github.com/images/red-polo.png",
+    "https://octodex.github.com/images/femalecodertocat.png",
+    "https://octodex.github.com/images/octobiwan.jpg"
+  ]
+}

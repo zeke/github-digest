@@ -1,0 +1,39 @@
+{
+  "id": "zxeqjqgyz5rmw0d040sb4ejgsr",
+  "model": "google/nano-banana-2",
+  "version": "hidden",
+  "input": {
+    "aspect_ratio": "16:9",
+    "image_input": [
+      "https://octodex.github.com/images/original.png",
+      "<embedded reference image, see refs/cloudflare-logo.png>",
+      "https://octodex.github.com/images/red-polo.png",
+      "https://octodex.github.com/images/femalecodertocat.png",
+      "https://octodex.github.com/images/octobiwan.jpg"
+    ],
+    "output_format": "jpg",
+    "prompt": "A charming 3D-rendered octocat (GitHub's half-octopus, half-cat mascot: black cat head and body with grey octopus tentacle legs, round eyes) floating happily on top of a fluffy, glossy cloud rendered in Cloudflare's signature bright orange color. The octocat is mid-motion, joyfully throwing a small white paper airplane out to the side, arm extended in a throwing pose, as if sending an email. The scene has a clean, modern, playful tech-illustration style with soft studio lighting, gentle shadows, and a smooth gradient sky background transitioning from light blue to white. The orange cloud has a soft, puffy, cumulus shape with subtle highlights. Wide banner composition with the octocat and cloud centered-left, leaving open sky space to the right for the paper airplane's flight path. High detail, vibrant colors, professional product-illustration quality, suitable for a website social preview image.",
+    "resolution": "2K"
+  },
+  "logs": "No sid\n/usr/local/lib/python3.12/site-packages/PIL/Image.py:1136: UserWarning: Palette images with Transparency expressed in bytes should be converted to RGBA images\n  warnings.warn(\nGenerating image with Gemini Flash...\nTokens: 7471\nGenerated image in 19.09 seconds\n",
+  "output": "https://replicate.delivery/xezq/RmPfeEk0qEsB2UbnneEUyvr4ShGJQL0pf0FKHZHlu0Lqe0p4C/tmppm8z9qqk.jpeg",
+  "data_removed": false,
+  "error": null,
+  "source": "api",
+  "status": "succeeded",
+  "created_at": "2026-08-20T17:22:30.777Z",
+  "started_at": "2026-08-20T17:22:30.795659016Z",
+  "completed_at": "2026-08-20T17:22:50.403885403Z",
+  "urls": {
+    "cancel": "https://api.replicate.com/v1/predictions/zxeqjqgyz5rmw0d040sb4ejgsr/cancel",
+    "get": "https://api.replicate.com/v1/predictions/zxeqjqgyz5rmw0d040sb4ejgsr",
+    "stream": "https://stream.replicate.com/v1/files/jbxs-2fmj5ixxqxgx5d7vpbzgicddp37gxzuoeq43pf4v7snobuhosqea",
+    "web": "https://replicate.com/p/zxeqjqgyz5rmw0d040sb4ejgsr"
+  },
+  "metrics": {
+    "image_output_count": 1,
+    "predict_time": 19.608226387,
+    "resolution_target": "2K",
+    "total_time": 19.626885403
+  }
+}
