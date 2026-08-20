@@ -1,31 +1,27 @@
-# github-digest
+# GitHub Digest
 
-I used to open GitHub every morning and scroll through a pile of notifications
-trying to figure out what actually needed me. Most of it didn't. So I built a
-little agent that does the scrolling for me and just emails me the parts that
-matter: unread notifications, PRs waiting on my review, issues assigned to me,
-and anything new on repos I've starred.
+This is a simple automation that emails me a daily summary of GitHub activity
+for repos I'm watching.
 
-It's also a demo of [Flue](https://flueframework.com), the agent framework
-it's built on. One tool, one agent, one script, run on a schedule by GitHub
-Actions. No server to host, no dashboard to check. The email either lands in
-my inbox or it doesn't need to.
+It uses the [Flue](https://flueframework.com) framework, [Cloudflare AI
+Gateway](https://developers.cloudflare.com/ai-gateway/), [Cloudflare Email
+Service](https://developers.cloudflare.com/email-routing/), GitHub Actions,
+and the GitHub API.
 
 ## Example
 
-A real digest email, screenshotted straight from my inbox:
+Here's an example screenshot of the email output:
 
 ![Example digest email showing Needs your attention (Pull Requests and Issues) and Highlights sections](./docs/example-digest.jpg)
 
 ## How it works
 
-I wanted this repo to double as a tour of Flue's core pieces, not just a
-working script. Here's what happens on every run, in order.
-
 1. **A trigger fires.** GitHub Actions runs on a schedule (or I trigger it
-   manually) and invokes a plain Node script — no server, no `app.ts`, just
+   manually) and invokes `scripts/send-digest.ts`, a plain Node script — no
+   server, no Cloudflare Worker, no `app.ts`, just
    [`start()`](https://flueframework.com/docs/guide/workflows/) booting the
-   Flue runtime for the life of one script.
+   Flue runtime in-process for the life of that script, on the GitHub Actions
+   runner.
 2. **The script starts an agent.** `init()` gets a handle to the
    `GithubDigest` [agent](https://flueframework.com/docs/guide/building-agents/),
    a plain TypeScript function marked with `'use agent'`. `dispatch()` sends
