@@ -30,8 +30,8 @@ Here's an example screenshot of the email output:
    activity, and shapes it into one structured summary.
 4. A model, called through **[Cloudflare AI
    Gateway](https://developers.cloudflare.com/ai-gateway/)** with Unified
-   Billing, reads that summary and writes the digest as Markdown. No
-   separate Anthropic API key required, just a Cloudflare account.
+   Billing, reads that summary and writes the digest as Markdown. All it
+   needs is a Cloudflare account.
 5. The Markdown is converted to HTML and sent as an email via the
    **[Cloudflare Email Sending](https://developers.cloudflare.com/email-routing/)**
    API.
