@@ -1,9 +1,10 @@
 name: Send digest
 
 on:
-  schedule:
-    - cron: '0 15 * * *' # 8am PDT (UTC-7)
-    - cron: '0 16 * * *' # 8am PST (UTC-8)
+  # Schedule disabled. Uncomment to resume daily digests.
+  # schedule:
+  #   - cron: '0 15 * * *' # 8am PDT (UTC-7)
+  #   - cron: '0 16 * * *' # 8am PST (UTC-8)
   workflow_dispatch: {}
 
 jobs:

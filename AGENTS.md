@@ -38,6 +38,10 @@ iterating on the agent's prompt.
 
 ## Scheduling and DST
 
+The `schedule:` block in `.github/workflows/digest.yml` is currently
+commented out, so the digest only runs via `workflow_dispatch`. Uncomment it
+to resume daily sends.
+
 `.github/workflows/digest.yml` has two `schedule:` cron lines — `0 15 * * *`
 and `0 16 * * *` UTC — because GitHub Actions cron is UTC-only and doesn't
 shift with daylight saving. One of those two times is 8am Pacific on any given
